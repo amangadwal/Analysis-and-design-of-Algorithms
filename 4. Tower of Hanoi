@@ -1,0 +1,38 @@
+#include <iostream>
+#include <chrono>
+#include <cstdlib>
+using namespace std;
+using namespace std::chrono;
+void towers_of_hanoi(int n, char source, char auxiliary, char destination)
+{
+    if (n == 1)
+    {
+        cout << "Move disk 1 from " << source << " to " << destination << endl;
+        return;
+    }
+
+    towers_of_hanoi(n - 1, source, destination, auxiliary);
+    cout << "Move disk " << n << " from " << source << " to " << destination << endl;
+    towers_of_hanoi(n - 1, auxiliary, source, destination);
+}
+int main()
+{
+    // Generate a random input size between 5 and 15
+    int input_size = rand() % 11 + 5;
+
+    cout << "Input Size: " << input_size << endl;
+
+    // Start measuring time
+    auto start = high_resolution_clock::now();
+
+    // Execute Towers of Hanoi
+    towers_of_hanoi(input_size, 'A', 'B', 'C');
+
+    // Stop measuring time
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<nanoseconds>(stop - start);
+
+    cout << "Time taken: " << duration.count() << " nanoseconds" << endl;
+
+    return 0;
+}

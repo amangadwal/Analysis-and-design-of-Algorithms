@@ -1,0 +1,66 @@
+#include <iostream>
+#include <vector>
+#include <chrono>
+#include <algorithm>
+#include <stack>
+
+using namespace std;
+using namespace std::chrono;
+
+// Partition function for Quick Sort
+int partition(vector<int>& arr, int low, int high) {
+    int pivot = arr[high];
+    int i = low - 1;
+    for (int j = low; j < high; ++j) {
+        if (arr[j] < pivot) {
+            ++i;
+            swap(arr[i], arr[j]);
+        }
+    }
+    swap(arr[i + 1], arr[high]);
+    return i + 1;
+}
+
+// Iterative Quick Sort function
+void iterativeQuickSort(vector<int>& arr, int low, int high) {
+    stack<pair<int, int>> stk;
+    stk.push({low, high});
+
+    while (!stk.empty()) {
+        int start = stk.top().first;
+        int end = stk.top().second;
+        stk.pop();
+
+        if (start < end) {
+            int pivotIndex = partition(arr, start, end);
+
+            // Push subarrays to the stack
+            stk.push({start, pivotIndex - 1});
+            stk.push({pivotIndex + 1, end});
+        }
+    }
+}
+
+int main() {
+    // Measuring time for different input sizes
+    for (int size = 100000; size <= 500000; size += 100000) {
+        // Create a vector with random numbers
+        vector<int> arr(size);
+        for (int i = 0; i < size; ++i)
+            arr[i] = rand() % size;
+
+        // Start measuring time
+        auto start = high_resolution_clock::now();
+
+        // Perform iterative Quick Sort
+        iterativeQuickSort(arr, 0, size - 1);
+
+        // Stop measuring time
+        auto stop = high_resolution_clock::now();
+
+        auto duration = duration_cast<nanoseconds>(stop - start);
+        cout << "Input size: " << size << ", Time taken: " << duration.count() << " nanoseconds" << endl;
+    }
+
+    return 0;
+}
